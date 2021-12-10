@@ -1,8 +1,7 @@
 version: 2.1
 
 orbs:
-  # Replace this with your own!
-  mobile: autify/mobile@<<pipeline.parameters.dev-orb-version>>
+  autify-for-mobile: autify/mobile@<<pipeline.parameters.dev-orb-version>>
   orb-tools: circleci/orb-tools@10.0
   bats: circleci/bats@1.0
   shellcheck: circleci/shellcheck@2.0
@@ -29,10 +28,12 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      # "greet" is a sample command packaged with this orb config.
-      # This sample integration test will run as long as the greet command exists. Once you remove the greet command you should remove this line.
-      # Push new changes first, before adding new tests to your config.
-      - mobile/greet
+      - autify-for-mobile/run_test_plan:
+          test_plan_id: $INTEGRATION_TEST_TEST_PLAN_ID
+          build_id: $INTEGRATION_TEST_BUILD_ID
+      - run:
+          name: Make sure the response is saved
+          command: cat response-mobile-run-test-plan.txt
 
 workflows:
   # Prior to producing a development orb (which requires credentials) basic validation, linting, and even unit testing can be performed.
@@ -42,12 +43,6 @@ workflows:
     jobs:
       - orb-tools/lint # Lint Yaml files
       - orb-tools/pack # Pack orb source
-      - shellcheck/check:
-          dir: ./src/scripts
-          exclude: SC2148
-      # optional: Run BATS tests against your scripts
-      - bats/run:
-          path: ./src/tests
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
           orb-name: autify/mobile
@@ -55,8 +50,6 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - bats/run
-            - shellcheck/check
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:

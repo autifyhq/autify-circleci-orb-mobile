@@ -1,15 +1,10 @@
 version: 2.1
 
 description: >
-  Sample orb description
-# What will your orb allow users to accomplish?
-# Descriptions should be short, simple, and informative.
+  Runs a test plan to run automated E2E test scenarios on Autify For Mobile.
+  Make sure to set your personal access token in the environment variable `AUTIFY_FOR_MOBILE_API_TOKEN` in your project.
+  Click `Settings` on the left menu -> click the `Personal Access Token` on the sub menu in https://mobile-app.autify.com/ and you can get the token.
 
-# This information will be displayed in the orb registry and is not mandatory.
 display:
-  home_url: "https://www.website.com/docs"
-  source_url: "https://www.github.com/EXAMPLE_ORG/EXAMPLE_PROJECT"
-
-# If your orb requires other orbs, you can import them like this. Otherwise remove the "orbs" stanza.
-# orbs:
-#  hello: circleci/hello-build@0.0.5
+  home_url: "https://autify.com/"
+  source_url: "https://github.com/autifyhq/autify-circleci-orb-mobile"

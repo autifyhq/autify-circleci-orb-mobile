@@ -1,13 +1,12 @@
 description: >
-  Sample example description.
-# Provide a use-case based example for using this orb.
-# Everything in the `usage` section will be displayed in the orb registry.
-# Comments are not retained.
+  Runs a test plan on Autify For Mobile.
 usage:
   version: 2.1
   orbs:
-    <orb-name>: <namespace>/<orb-name>@1.2.3
+    autify-for-mobile: autify/mobile@1.2.3
   workflows:
     use-my-orb:
       jobs:
-        - <orb-name>/<job-name>
+        - autify-for-mobile/run_test_plan:
+            test_plan_id: 1a2B3c
+            build_id: 4d5E6f7g

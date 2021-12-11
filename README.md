@@ -1,4 +1,4 @@
-# Orb Project Template
+# Autify For Mobile CircleCI Orb
 
 [![CircleCI Build Status](https://circleci.com/gh/autifyhq/autify-circleci-orb-mobile.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/autifyhq/autify-circleci-orb-mobile)
 [![CircleCI Orb Version](https://badges.circleci.com/orbs/autify/mobile.svg)](https://circleci.com/orbs/registry/orb/autify/mobile)

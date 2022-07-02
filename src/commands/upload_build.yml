@@ -23,9 +23,5 @@ steps:
       name: Download Mobile CLI file
       command: <<include(scripts/download_mobile_cli_script.sh)>>
   - run:
-      name: upload app directory
-      command: |
-        export AUTIFY_PROJECT_ID="<<parameters.autify_project_id>>"
-        export AUTIFY_APP_DIR_PATH="<<parameters.autify_app_dir_path>>"
-        export AUTIFY_UPLOAD_TOKEN="<<parameters.autify_upload_token>>"
-        exec ./autify_mobile_cli.sh
+      name: Upload app directory
+      command: <<include(scripts/exec_autify_mobile_cli.sh)>>

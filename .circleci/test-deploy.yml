@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  autify-for-mobile: autify/mobile@<<pipeline.parameters.dev-orb-version>>
+  autify-for-mobile: autify/mobile@dev:<<pipeline.git.revision>>
   orb-tools: circleci/orb-tools@11.1
 
 filters: &filters

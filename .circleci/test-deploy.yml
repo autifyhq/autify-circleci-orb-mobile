@@ -1,0 +1,43 @@
+version: 2.1
+orbs:
+  autify-for-mobile: autify/mobile@<<pipeline.parameters.dev-orb-version>>
+  orb-tools: circleci/orb-tools@11.1
+
+filters: &filters
+  tags:
+    only: /.*/
+
+jobs:
+  integration-test:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - autify-for-mobile/run_test_plan:
+          test_plan_id: $INTEGRATION_TEST_TEST_PLAN_ID
+          build_id: $INTEGRATION_TEST_BUILD_ID
+      - run:
+          name: Make sure the response is saved
+          command: cat response-mobile-run-test-plan.txt
+
+workflows:
+  test-deploy:
+    jobs:
+      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
+      - command-tests:
+          filters: *filters
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: autify/mobile
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - integration-test
+          context: orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/

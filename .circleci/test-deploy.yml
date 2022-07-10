@@ -14,8 +14,8 @@ jobs:
     steps:
       - checkout
       - autify-for-mobile/run_test_plan:
-          test_plan_id: $INTEGRATION_TEST_TEST_PLAN_ID
-          build_id: $INTEGRATION_TEST_BUILD_ID
+          test_plan_id: ${INTEGRATION_TEST_TEST_PLAN_ID}
+          build_id: ${INTEGRATION_TEST_BUILD_ID}
       - run:
           name: Make sure the response is saved
           command: cat response-mobile-run-test-plan.txt

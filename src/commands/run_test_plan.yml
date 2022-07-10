@@ -17,4 +17,9 @@ parameters:
 steps:
   - run:
       name: Run a test plan on Autify For Mobile
+      environment:
+        TEST_PLAN_API_BASE_URL: "<<parameters.test_plan_api_base_url>>"
+        BUILD_ID: "<<parameters.build_id>>"
+        TEST_PLAN_ID: "<<parameters.test_plan_id>>"
+        RESPONSE_FILE_PATH: "<<parameters.response_file_path>>"
       command: <<include(scripts/run_test_plan.sh)>>

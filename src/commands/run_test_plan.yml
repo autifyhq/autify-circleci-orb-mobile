@@ -1,6 +1,12 @@
 description: >
   Runs a test plan on Autify For Mobile.
 parameters:
+  test_plan_id:
+    type: string
+    description: Test Plan ID that you want to run
+  build_id:
+    type: string
+    description: Build ID that you want to run test against
   test_plan_api_base_url:
     type: string
     default: https://mobile-app.autify.com/api/v1/test_plans/
@@ -9,6 +15,11 @@ parameters:
     default: response-mobile-run-test-plan.txt
     description: File path that keeps the response from the API
 steps:
+  - run:
+      name: Setup Secret environment
+      command: |
+        echo "export TEST_PLAN_ID=<<parameters.test_plan_id>>" >> $BASH_ENV
+        echo "export BUILD_ID=<<parameters.build_id>>" >> $BASH_ENV
   - run:
       name: Run a test plan on Autify For Mobile
       environment:

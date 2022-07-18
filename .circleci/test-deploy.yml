@@ -13,15 +13,13 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Setup Environments
-          command: |
-            echo "export TEST_PLAN_ID=${INTEGRATION_TEST_TEST_PLAN_ID}" >> $BASH_ENV
-            echo "export BUILD_ID=${INTEGRATION_TEST_BUILD_ID}" >> $BASH_ENV
-      - autify-for-mobile/run_test_plan
+      - autify-for-mobile/run_test_plan:
+          test_plan_id: ${INTEGRATION_TEST_TEST_PLAN_ID}
+          build_id: ${INTEGRATION_TEST_BUILD_ID}
       - run:
           name: Make sure the response is saved
           command: cat response-mobile-run-test-plan.txt
+      - autify-for-mobile/upload_build
 
 
 workflows:

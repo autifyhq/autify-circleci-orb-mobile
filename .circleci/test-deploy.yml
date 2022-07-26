@@ -19,7 +19,6 @@ jobs:
       - run:
           name: Make sure the response is saved
           command: cat response-mobile-run-test-plan.txt
-      - autify-for-mobile/upload_build
 
 
 workflows:

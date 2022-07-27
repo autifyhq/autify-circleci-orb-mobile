@@ -19,6 +19,16 @@ jobs:
       - run:
           name: Make sure the response is saved
           command: cat response-mobile-run-test-plan.txt
+      - run:
+          name: Download app files
+          command: |
+            readonly APP_ZIP_FILE="https://github.com/autifyhq/public-testing-assets/raw/main/mobile/ios/ci-sample.zip"
+            curl -L -o "./ci-sample.zip" $APP_ZIP_FILE
+            unzip ./ci-sample.zip -d ./app_dir
+      - autify-for-mobile/upload_build:
+          autify_project_id: ${INTEGRATION_TEST_PROJECT_ID}
+          autify_upload_token: ${INTEGRATION_TEST_UPLOAD_TOKEN}
+          autify_app_dir_path: "./app_dir/ci-sample.app/"
 
 
 workflows:

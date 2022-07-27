@@ -24,11 +24,9 @@ steps:
             -d "{\"build_id\":\"<<parameters.build_id>>\"}" \
             "<<parameters.test_plan_api_base_url>>""<<parameters.test_plan_id>>"/test_plan_results \
             > "<<parameters.response_file_path>>"
-
         errors=$(cat "<<parameters.response_file_path>>" | jq .errors)
         id=$(cat "<<parameters.response_file_path>>" | jq .id)
         data=$(cat "<<parameters.response_file_path>>" | jq .test_plan)
-
         if [ "${errors}" = "null" ]; then
             if [ "${data}" != "null" ]; then
                 echo "Successfully started the test plan."
@@ -40,7 +38,6 @@ steps:
                 # In case the response has neither `data` nor `errors`
                 echo "Something went wrong. The response was :"
                 cat "<<parameters.response_file_path>>"
-
                 exit 1
             fi
         else
@@ -53,6 +50,5 @@ steps:
                     echo "${message}"
                 done
             fi
-
             exit 1
         fi

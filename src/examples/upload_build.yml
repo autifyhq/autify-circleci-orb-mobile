@@ -1,0 +1,13 @@
+description: >
+  Runs a test plan on Autify For Mobile.
+usage:
+  version: 2.1
+  orbs:
+    autify-for-mobile: autify/mobile@1.2.3
+  workflows:
+    use-my-orb:
+      jobs:
+        - autify-for-mobile/upload_build:
+            autify_project_id: your_project_id
+            autify_upload_token: your_token
+            autify_app_dir_path: "./app_dir/example.app/"

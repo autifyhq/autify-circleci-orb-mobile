@@ -1,10 +1,11 @@
 version: 2.1
 
 description: >
-  Runs a test plan to run automated E2E test scenarios on Autify For Mobile.
-  Make sure to set your personal access token in the environment variable `AUTIFY_FOR_MOBILE_API_TOKEN` in your project.
-  Click `Settings` on the left menu -> click the `Personal Access Token` on the sub menu in https://mobile-app.autify.com/ and you can get the token.
+  CircleCI integration with Autify for Mobile. Upload a build and/or run a test plan with this Orb.
 
 display:
-  home_url: "https://autify.com/"
+  home_url: "https://help.autify.com/docs/autify-command-line-interface"
   source_url: "https://github.com/autifyhq/autify-circleci-orb-mobile"
+
+orbs:
+  autify-cli: autify/autify-cli@1

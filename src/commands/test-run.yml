@@ -1,0 +1,48 @@
+description: >
+  Run a test plan on Autify for Mobile.
+
+parameters:
+  access-token:
+    type: env_var_name
+    default: AUTIFY_MOBILE_ACCESS_TOKEN
+    description: "Environment variable storing the access token of Autify for Mobile."
+  autify-test-url:
+    type: string
+    description: 'URL of a test plan e.g. https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>'
+  build-id:
+    type: string
+    default: ''
+    description: 'ID of the already uploaded build. (Note: Either build-id or build-path is required but not both)'
+  build-path:
+    type: string
+    default: ''
+    description: 'File path to the iOS app (*.app) or Android app (*.apk). (Note: Either build-id or build-path is required but not both)'
+  verbose:
+    type: boolean
+    default: true
+  wait:
+    type: boolean
+    default: false
+    description: 'When true, the action waits until the test finishes.'
+  timeout:
+    type: string
+    default: ''
+    description: 'Timeout seconds when waiting.'
+  autify-path:
+    type: string
+    default: 'autify'
+    description: 'A path to `autify`.'
+
+steps:
+  - run:
+      environment:
+        INPUT_ACCESS_TOKEN: << parameters.access-token >>
+        INPUT_AUTIFY_TEST_URL: << parameters.autify-test-url >>
+        INPUT_BUILD_ID: << parameters.build-id >>
+        INPUT_BUILD_PATH: << parameters.build-path >>
+        INPUT_VERBOSE: << parameters.verbose >>
+        INPUT_WAIT: << parameters.wait >>
+        INPUT_TIMEOUT: << parameters.timeout >>
+        INPUT_AUTIFY_PATH: << parameters.autify-path >>
+      name: Run a test plan on Autify for Mobile.
+      command: <<include(scripts/test-run.sh)>>

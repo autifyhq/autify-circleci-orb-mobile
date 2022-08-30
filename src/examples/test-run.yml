@@ -1,0 +1,25 @@
+description: >
+  Run a test plan.
+
+usage:
+  version: 2.1
+
+  orbs:
+    autify-mobile: autify/autify-mobile@2
+
+  workflows:
+    test-run-build-id:
+      jobs:
+        - autify-mobile/test-run:
+            autify-test-url: https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>
+            build-id: AAA
+    test-run-build-path-android:
+      jobs:
+        - autify-mobile/test-run:
+            autify-test-url: https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>
+            build-path: /path/to/android.apk
+    test-run-build-path-ios:
+      jobs:
+        - autify-mobile/test-run:
+            autify-test-url: https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>
+            build-path: /path/to/ios.app

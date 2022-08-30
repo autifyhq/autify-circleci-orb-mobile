@@ -1,0 +1,78 @@
+version: 2.1
+orbs:
+  autify-cli: autify/autify-cli@1
+  autify-mobile: autify/autify-mobile@dev:<<pipeline.git.revision>>
+  orb-tools: circleci/orb-tools@11.1
+
+filters: &filters
+  tags:
+    only: /.*/
+
+jobs:
+  # Create a job to test the commands of your orbs.
+  # You may want to add additional validation steps to ensure the commands are working as expected.
+  command-tests:
+    docker:
+      - image: 'cimg/node:lts'
+    environment:
+      AUTIFY_TEST_WAIT_INTERVAL_SECOND: 0
+    steps:
+      - checkout
+      - run: bash test/test-run.test.bash
+      - run: bash test/build-upload.test.bash
+      - autify-cli/install
+      - run: npm install @autifyhq/autify-cli-integration-test
+      - run: npx autify-mobile-generate-fake-app
+      - run: echo 'export AUTIFY_MOBILE_ACCESS_TOKEN="token"' >> $BASH_ENV
+      # Run your orb's commands to validate them.
+      - autify-mobile/build-upload:
+          build-path: ./android.apk
+          workspace-id: AAA
+          autify-path: ./node_modules/.bin/autify-with-proxy
+      - autify-mobile/build-upload:
+          build-path: ./ios.app
+          workspace-id: AAA
+          autify-path: ./node_modules/.bin/autify-with-proxy
+      - autify-mobile/test-run:
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-id: CCC
+          autify-path: ./node_modules/.bin/autify-with-proxy
+          verbose: false
+      - autify-mobile/test-run:
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-id: CCC
+          wait: true
+          autify-path: ./node_modules/.bin/autify-with-proxy
+          verbose: false
+      - autify-mobile/test-run:
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-path: ./android.apk
+          autify-path: ./node_modules/.bin/autify-with-proxy
+          verbose: false
+      - autify-mobile/test-run:
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-path: ./ios.app
+          autify-path: ./node_modules/.bin/autify-with-proxy
+          verbose: false
+
+workflows:
+  test-deploy:
+    jobs:
+      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
+      - command-tests:
+          filters: *filters
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: autify/autify-mobile
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - command-tests
+          context: orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/

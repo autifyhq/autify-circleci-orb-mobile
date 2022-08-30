@@ -1,0 +1,53 @@
+description: >
+  Run a test plan on Autify for Mobile.
+
+docker:
+  - image: << parameters.docker-image-for-job >>
+
+parameters:
+  docker-image-for-job:
+    type: string
+    default: 'cimg/base:current'
+    description: The docker image to be used for running this job on CircleCI.
+  access-token:
+    type: env_var_name
+    default: AUTIFY_MOBILE_ACCESS_TOKEN
+    description: "Environment variable storing the access token of Autify for Mobile."
+  autify-test-url:
+    type: string
+    description: 'URL of a test plan e.g. https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>'
+  build-id:
+    type: string
+    default: ''
+    description: 'ID of the already uploaded build. (Note: Either build-id or build-path is required but not both)'
+  build-path:
+    type: string
+    default: ''
+    description: 'File path to the iOS app (*.app) or Android app (*.apk). (Note: Either build-id or build-path is required but not both)'
+  verbose:
+    type: boolean
+    default: true
+  wait:
+    type: boolean
+    default: false
+    description: 'When true, the action waits until the test finishes.'
+  timeout:
+    type: string
+    default: ''
+    description: 'Timeout seconds when waiting.'
+  autify-path:
+    type: string
+    default: 'autify'
+    description: 'A path to `autify`.'
+
+steps:
+  - autify-cli/install
+  - test-run:
+      access-token: << parameters.access-token >>
+      autify-test-url: << parameters.autify-test-url >>
+      build-id: << parameters.build-id >>
+      build-path: << parameters.build-path >>
+      verbose: << parameters.verbose >>
+      wait: << parameters.wait >>
+      timeout: << parameters.timeout >>
+      autify-path: << parameters.autify-path >>

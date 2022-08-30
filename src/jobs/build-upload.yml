@@ -1,0 +1,33 @@
+description: >
+  Upload a build file to Autify for Mobile.
+
+docker:
+  - image: << parameters.docker-image-for-job >>
+
+parameters:
+  docker-image-for-job:
+    type: string
+    default: 'cimg/base:current'
+    description: The docker image to be used for running this job on CircleCI.
+  access-token:
+    type: env_var_name
+    default: AUTIFY_MOBILE_ACCESS_TOKEN
+    description: "Environment variable storing the access token of Autify for Mobile."
+  workspace-id:
+    type: string
+    description: 'Workspace ID to upload the build file.'
+  build-path:
+    type: string
+    description: 'File path to the iOS app (*.app) or Android app (*.apk).'
+  autify-path:
+    type: string
+    default: 'autify'
+    description: 'A path to `autify`.'
+
+steps:
+  - autify-cli/install
+  - build-upload:
+      access-token: << parameters.access-token >>
+      workspace-id: << parameters.workspace-id >>
+      build-path: << parameters.build-path >>
+      autify-path: << parameters.autify-path >>

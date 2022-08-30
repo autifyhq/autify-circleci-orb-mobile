@@ -1,0 +1,20 @@
+description: >
+  Upload a build file to Autify for Mobile.
+
+usage:
+  version: 2.1
+
+  orbs:
+    autify-mobile: autify/autify-mobile@2
+
+  workflows:
+    build-upload-android:
+      jobs:
+        - autify-mobile/build-upload:
+            workspace-id: AAA
+            build-path: /path/to/android.apk
+    build-upload-ios:
+      jobs:
+        - autify-mobile/test-run:
+            workspace-id: AAA
+            build-path: /path/to/ios.app

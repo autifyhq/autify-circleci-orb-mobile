@@ -1,0 +1,28 @@
+description: >
+  Upload a build file to Autify for Mobile.
+
+parameters:
+  access-token:
+    type: env_var_name
+    default: AUTIFY_MOBILE_ACCESS_TOKEN
+    description: "Environment variable storing the access token of Autify for Mobile."
+  workspace-id:
+    type: string
+    description: 'Workspace ID to upload the build file.'
+  build-path:
+    type: string
+    description: 'File path to the iOS app (*.app) or Android app (*.apk).'
+  autify-path:
+    type: string
+    default: 'autify'
+    description: 'A path to `autify`.'
+
+steps:
+  - run:
+      environment:
+        INPUT_ACCESS_TOKEN: << parameters.access-token >>
+        INPUT_WORKSPACE_ID: << parameters.workspace-id >>
+        INPUT_BUILD_PATH: << parameters.build-path >>
+        INPUT_AUTIFY_PATH: << parameters.autify-path >>
+      name: Upload a build file to Autify for Mobile
+      command: <<include(scripts/build-upload.sh)>>

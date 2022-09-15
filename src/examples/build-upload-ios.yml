@@ -1,0 +1,27 @@
+description: >
+  Upload an iOS build file to Autify for Mobile.
+
+usage:
+  version: 2.1
+
+  orbs:
+    autify-mobile: autify/autify-mobile@2
+
+  jobs:
+    build-ios:
+      macos:
+        xcode: 13.4.1
+      steps:
+        - run : echo "Prepare build"
+        - run: xcodebuild -configuration Debug -target hello-world -arch x86_64 -sdk iphonesimulator
+        - persist_to_workspace:
+            root: build/Debug-iphonesimulator
+            paths: hello-world.app
+
+  workflows:
+    build-upload-ios:
+      jobs:
+        - build-ios
+        - autify-mobile/build-upload:
+            workspace-id: AAA
+            build-path: hello-world.app

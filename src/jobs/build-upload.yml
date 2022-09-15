@@ -18,13 +18,15 @@ parameters:
     description: 'Workspace ID to upload the build file.'
   build-path:
     type: string
-    description: 'File path to the iOS app (*.app) or Android app (*.apk).'
+    description: 'File path to the iOS app (*.app) or Android app (*.apk) in the workspace.'
   autify-path:
     type: string
     default: 'autify'
     description: 'A path to `autify`.'
 
 steps:
+  - attach_workspace:
+      at: .
   - autify-cli/install
   - build-upload:
       access-token: << parameters.access-token >>

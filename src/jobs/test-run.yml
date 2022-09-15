@@ -23,7 +23,7 @@ parameters:
   build-path:
     type: string
     default: ''
-    description: 'File path to the iOS app (*.app) or Android app (*.apk). (Note: Either build-id or build-path is required but not both)'
+    description: 'File path to the iOS app (*.app) or Android app (*.apk) in the workspace. (Note: Either build-id or build-path is required but not both)'
   verbose:
     type: boolean
     default: true
@@ -41,6 +41,8 @@ parameters:
     description: 'A path to `autify`.'
 
 steps:
+  - attach_workspace:
+      at: .
   - autify-cli/install
   - test-run:
       access-token: << parameters.access-token >>

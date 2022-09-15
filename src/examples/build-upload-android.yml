@@ -1,0 +1,28 @@
+description: >
+  Upload an Android build file to Autify for Mobile.
+
+usage:
+  version: 2.1
+
+  orbs:
+    android: circleci/android@2.0
+    autify-mobile: autify/autify-mobile@2
+
+  jobs:
+    build-android:
+      executor:
+        name: android/android-machine
+      steps:
+        - run : echo "Prepare build"
+        - run: ./gradlew assembleRelease
+        - persist_to_workspace:
+            root: app/build/outputs/apk/release
+            paths: android-release.apk
+
+  workflows:
+    build-upload-android:
+      jobs:
+        - build-android
+        - autify-mobile/build-upload:
+            workspace-id: AAA
+            build-path: android-release.apk

@@ -23,5 +23,7 @@ usage:
       jobs:
         - build-ios
         - autify-mobile/build-upload:
+            requires:
+              - build-ios
             workspace-id: AAA
             build-path: hello-world.app

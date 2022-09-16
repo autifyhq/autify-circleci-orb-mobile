@@ -28,5 +28,7 @@ usage:
       jobs:
         - build-ios
         - autify-mobile/test-run:
+            requires:
+              - build-ios
             autify-test-url: https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>
             build-path: hello-world.app

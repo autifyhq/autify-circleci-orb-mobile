@@ -24,5 +24,7 @@ usage:
       jobs:
         - build-android
         - autify-mobile/build-upload:
+            requires:
+              - build-android
             workspace-id: AAA
             build-path: android-release.apk

@@ -29,5 +29,7 @@ usage:
       jobs:
         - build-android
         - autify-mobile/test-run:
+            requires:
+              - build-android
             autify-test-url: https://mobile-app.autify.com/projects/<ID>/test_plans/<ID>
             build-path: android-release.apk

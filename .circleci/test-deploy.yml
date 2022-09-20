@@ -1,66 +1,159 @@
 version: 2.1
 orbs:
-  autify-cli: autify/autify-cli@1
   autify-mobile: autify/autify-mobile@dev:<<pipeline.git.revision>>
+  autify-cli: autify/autify-cli@2
+  node: circleci/node@5
   orb-tools: circleci/orb-tools@11.1
 
 filters: &filters
   tags:
     only: /.*/
 
-jobs:
-  # Create a job to test the commands of your orbs.
-  # You may want to add additional validation steps to ensure the commands are working as expected.
-  command-tests:
+executors:
+  windows:
+    machine:
+      resource_class: 'windows.medium'
+      image: windows-server-2022-gui:current
+  macos:
+    macos:
+      xcode: 14.0.0
+  integration-test:
     docker:
-      - image: 'cimg/node:lts'
+      - image: cimg/node:current
+    resource_class: small
+    shell: bash
     environment:
+      AUTIFY_MOBILE_ACCESS_TOKEN: token
+      AUTIFY_CLI_INTEGRATION_TEST_INSTALL: 1
+      AUTIFY_TEST_WAIT_INTERVAL_SECOND: 0
+
+jobs:
+  generate-fake-app:
+    executor: integration-test
+    shell: bash
+    steps:
+      - autify-cli/install
+      - run: autify-mobile-generate-fake-app
+      - persist_to_workspace:
+          root: .
+          paths:
+            - android.apk
+            - ios.app
+  command-tests:
+    parameters:
+      os:
+        type: executor
+    executor: << parameters.os >>
+    shell: bash
+    environment:
+      AUTIFY_MOBILE_ACCESS_TOKEN: token
+      AUTIFY_CLI_INTEGRATION_TEST_INSTALL: 1
       AUTIFY_TEST_WAIT_INTERVAL_SECOND: 0
     steps:
       - checkout
       - run: bash test/test-run.test.bash
       - run: bash test/build-upload.test.bash
-      - autify-cli/install
-      - run: npm install @autifyhq/autify-cli-integration-test
-      - run: npx autify-mobile-generate-fake-app
-      - run: echo 'export AUTIFY_MOBILE_ACCESS_TOKEN="token"' >> $BASH_ENV
+      - attach_workspace:
+          at: .
+      - node/install:
+          node-version: 16.17.0
+      - run: nvm use 16.17.0
       # Run your orb's commands to validate them.
       - autify-mobile/build-upload:
           build-path: ./android.apk
           workspace-id: AAA
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
       - autify-mobile/build-upload:
           build-path: ./ios.app
           workspace-id: AAA
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
       - autify-mobile/test-run:
           autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
           build-id: CCC
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
           verbose: false
       - autify-mobile/test-run:
           autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
           build-id: CCC
           wait: true
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
           verbose: false
       - autify-mobile/test-run:
           autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
           build-path: ./android.apk
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
           verbose: false
       - autify-mobile/test-run:
           autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
           build-path: ./ios.app
-          autify-path: ./node_modules/.bin/autify-with-proxy
+          autify-path: autify-with-proxy
           verbose: false
 
 workflows:
   test-deploy:
     jobs:
       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
-      - command-tests:
+      - generate-fake-app:
           filters: *filters
+      - command-tests:
+          requires: [generate-fake-app]
+          filters: *filters
+          matrix:
+            parameters:
+              os: [autify-cli/default, macos, windows]
+      - autify-mobile/build-upload:
+          requires: [generate-fake-app]
+          name: build-upload-android
+          filters: *filters
+          build-path: ./android.apk
+          workspace-id: AAA
+          autify-path: autify-with-proxy
+          executor: integration-test
+      - autify-mobile/build-upload:
+          requires: [generate-fake-app]
+          name: build-upload-ios
+          filters: *filters
+          build-path: ./ios.app
+          workspace-id: AAA
+          autify-path: autify-with-proxy
+          executor: integration-test
+      - autify-mobile/test-run:
+          requires: [generate-fake-app]
+          name: test-run
+          filters: *filters
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-id: CCC
+          autify-path: autify-with-proxy
+          verbose: false
+          executor: integration-test
+      - autify-mobile/test-run:
+          requires: [generate-fake-app]
+          name: test-run-wait
+          filters: *filters
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-id: CCC
+          wait: true
+          autify-path: autify-with-proxy
+          verbose: false
+          executor: integration-test
+      - autify-mobile/test-run:
+          requires: [generate-fake-app]
+          name: test-run-android
+          filters: *filters
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-path: ./android.apk
+          autify-path: autify-with-proxy
+          verbose: false
+          executor: integration-test
+      - autify-mobile/test-run:
+          requires: [generate-fake-app]
+          name: test-run-ios
+          filters: *filters
+          autify-test-url: https://mobile-app.autify.com/projects/AAA/test_plans/BBB
+          build-path: ./ios.app
+          autify-path: autify-with-proxy
+          verbose: false
+          executor: integration-test
       - orb-tools/pack:
           filters: *filters
       - orb-tools/publish:
@@ -68,8 +161,15 @@ workflows:
           vcs-type: << pipeline.project.type >>
           pub-type: production
           requires:
+            - generate-fake-app
             - orb-tools/pack
             - command-tests
+            - build-upload-android
+            - build-upload-ios
+            - test-run
+            - test-run-wait
+            - test-run-android
+            - test-run-ios
           context: orb-publishing
           filters:
             branches:

@@ -1,14 +1,9 @@
 description: >
   Run a test plan on Autify for Mobile.
 
-docker:
-  - image: << parameters.docker-image-for-job >>
+executor: << parameters.executor >>
 
 parameters:
-  docker-image-for-job:
-    type: string
-    default: 'cimg/base:current'
-    description: The docker image to be used for running this job on CircleCI.
   access-token:
     type: env_var_name
     default: AUTIFY_MOBILE_ACCESS_TOKEN
@@ -39,11 +34,18 @@ parameters:
     type: string
     default: 'autify'
     description: 'A path to `autify`.'
+  autify-cli-installer-url:
+    type: string
+    default: "https://autify-cli-assets.s3.amazonaws.com/autify-cli/channels/stable/install-cicd.bash"
+    description: 'Autify CLI installer URL'
+  executor:
+    type: executor
+    default: autify-cli/default
+    description: 'Executor name for this job.'
 
 steps:
   - attach_workspace:
       at: .
-  - autify-cli/install
   - test-run:
       access-token: << parameters.access-token >>
       autify-test-url: << parameters.autify-test-url >>
@@ -53,3 +55,4 @@ steps:
       wait: << parameters.wait >>
       timeout: << parameters.timeout >>
       autify-path: << parameters.autify-path >>
+      autify-cli-installer-url: << parameters.autify-cli-installer-url >>

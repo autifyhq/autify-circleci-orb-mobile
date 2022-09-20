@@ -32,8 +32,14 @@ parameters:
     type: string
     default: 'autify'
     description: 'A path to `autify`.'
+  autify-cli-installer-url:
+    type: string
+    default: "https://autify-cli-assets.s3.amazonaws.com/autify-cli/channels/stable/install-cicd.bash"
+    description: 'Autify CLI installer URL'
 
 steps:
+  - autify-cli/install:
+      shell-installer-url: << parameters.autify-cli-installer-url >>
   - run:
       environment:
         INPUT_ACCESS_TOKEN: << parameters.access-token >>

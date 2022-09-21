@@ -28,6 +28,10 @@ parameters:
     type: string
     default: ''
     description: 'Timeout seconds when waiting.'
+  max-retry-count:
+    type: string
+    default: ''
+    description: "Maximum retry count while waiting. The command can take up to `timeout * (max-retry-count + 1)`. Only effective with `wait`"
   autify-path:
     type: string
     default: 'autify'
@@ -49,6 +53,7 @@ steps:
         INPUT_VERBOSE: << parameters.verbose >>
         INPUT_WAIT: << parameters.wait >>
         INPUT_TIMEOUT: << parameters.timeout >>
+        INPUT_MAX_RETRY_COUNT: << parameters.max-retry-count >>
         INPUT_AUTIFY_PATH: << parameters.autify-path >>
       name: Run a test plan on Autify for Mobile.
       command: <<include(scripts/test-run.sh)>>

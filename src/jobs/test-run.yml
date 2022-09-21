@@ -30,6 +30,10 @@ parameters:
     type: string
     default: ''
     description: 'Timeout seconds when waiting.'
+  max-retry-count:
+    type: string
+    default: ''
+    description: "Maximum retry count while waiting. The command can take up to `timeout * (max-retry-count + 1)`. Only effective with `wait`"
   autify-path:
     type: string
     default: 'autify'
@@ -54,5 +58,6 @@ steps:
       verbose: << parameters.verbose >>
       wait: << parameters.wait >>
       timeout: << parameters.timeout >>
+      max-retry-count: << parameters.max-retry-count >>
       autify-path: << parameters.autify-path >>
       autify-cli-installer-url: << parameters.autify-cli-installer-url >>

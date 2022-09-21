@@ -46,4 +46,8 @@ if [ -n "${INPUT_TIMEOUT}" ]; then
   add_args "-t=${INPUT_TIMEOUT}"
 fi
 
+if [ -n "${INPUT_MAX_RETRY_COUNT}" ]; then
+  add_args "--max-retry-count=${INPUT_MAX_RETRY_COUNT}"
+fi
+
 AUTIFY_MOBILE_ACCESS_TOKEN="${ACCESS_TOKEN}" "${AUTIFY}" mobile test run "${ARGS[@]}"

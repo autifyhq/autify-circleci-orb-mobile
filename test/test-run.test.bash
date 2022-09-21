@@ -13,6 +13,7 @@ function before() {
   export INPUT_VERBOSE=0
   export INPUT_WAIT=0
   unset INPUT_TIMEOUT
+  unset INPUT_MAX_RETRY_COUNT
   echo "=== TEST ==="
 }
 
@@ -80,7 +81,8 @@ function test_log() {
   export INPUT_VERBOSE=1
   export INPUT_WAIT=1
   export INPUT_TIMEOUT=300
-  test_command "autify mobile test run a --build-id=b --verbose --wait -t=300"
+  export INPUT_MAX_RETRY_COUNT=1
+  test_command "autify mobile test run a --build-id=b --verbose --wait -t=300 --max-retry-count=1"
   test_code 0
   test_log
 }

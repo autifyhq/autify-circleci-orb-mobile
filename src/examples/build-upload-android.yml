@@ -6,7 +6,7 @@ usage:
 
   orbs:
     android: circleci/android@2.0
-    autify-mobile: autify/autify-mobile@2
+    autify-mobile: autify/autify-mobile@3
 
   jobs:
     build-android:

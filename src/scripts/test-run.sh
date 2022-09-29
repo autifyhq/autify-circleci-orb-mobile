@@ -50,4 +50,6 @@ if [ -n "${INPUT_MAX_RETRY_COUNT}" ]; then
   add_args "--max-retry-count=${INPUT_MAX_RETRY_COUNT}"
 fi
 
+export AUTIFY_CLI_USER_AGENT_SUFFIX="${AUTIFY_CLI_USER_AGENT_SUFFIX:=circleci-orb-mobile-test-run}"
+
 AUTIFY_MOBILE_ACCESS_TOKEN="${ACCESS_TOKEN}" "${AUTIFY}" mobile test run "${ARGS[@]}"

@@ -29,4 +29,6 @@ else
   exit 1
 fi
 
+export AUTIFY_CLI_USER_AGENT_SUFFIX="${AUTIFY_CLI_USER_AGENT_SUFFIX:=circleci-orb-mobile-build-upload}"
+
 AUTIFY_MOBILE_ACCESS_TOKEN="${ACCESS_TOKEN}" "${AUTIFY}" mobile build upload "${ARGS[@]}"

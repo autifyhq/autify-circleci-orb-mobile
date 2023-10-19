@@ -17,6 +17,7 @@ executors:
   macos:
     macos:
       xcode: 14.0.0
+    resource_class: 'macos.m1.medium.gen1'
   integration-test:
     docker:
       - image: cimg/node:current

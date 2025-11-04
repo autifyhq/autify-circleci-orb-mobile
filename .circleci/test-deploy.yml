@@ -16,8 +16,7 @@ executors:
       image: windows-server-2022-gui:current
   macos:
     macos:
-      xcode: 14.0.0
-    resource_class: 'macos.m1.medium.gen1'
+      xcode: 16.2.0
   integration-test:
     docker:
       - image: cimg/node:current

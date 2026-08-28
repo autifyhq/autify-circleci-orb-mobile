@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   autify-mobile: autify/autify-mobile@dev:<<pipeline.git.revision>>
-  autify-cli: autify/autify-cli@2
+  autify-cli: autify/autify-cli@2.1.0
   node: circleci/node@5
   orb-tools: circleci/orb-tools@11.1
 
